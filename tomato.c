@@ -18,10 +18,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-WINDOW * win; //creates standard screen
 
 //holds the state and data for the state machine
 struct settings{
+  WINDOW * win;//pointer to the curses window
   int breaklen;
   int worklen;
   time_t start;
@@ -80,7 +80,7 @@ void flasher(struct settings * proc, pid_t pid){
       else
         pair = 0;
       sleep(1);
-      wbkgd(win, COLOR_PAIR(pair));
+      wbkgd(proc->win, COLOR_PAIR(pair));
       refresh();
     }
   }
@@ -97,7 +97,7 @@ void alarmTrans(struct settings * proc){
   kill(pid, SIGKILL);
   wait(NULL);
   proc->state = (proc->state == ALARMW)? BREAK : WORK; 
-  wbkgd(win, COLOR_PAIR(0));
+  wbkgd(proc->win, COLOR_PAIR(0));
 }
 
 
@@ -127,22 +127,20 @@ void manager( struct settings proc){
   }
 }
 
-// TODO: REMOVE WINDOWS * win FROM GLOBAL SPACE!
 // TODO: add to ui an instruction on screen on how to exit and provide an alternative
 // to ctrl-c
-// TODO: implement a buzzer for the alert
 int main(int argc, char * argv[]){
   if(argc < 3){
     printf("Usage: %s [work length in seconds] [break length in seconds]\n", argv[0]);
     return -1;
   }
-  win = initscr(); //creates standard screen
   struct settings * proc = initProc(argv);
+  proc->win = initscr(); //creates standard screen
   cbreak(); //allows exiting with ctrl-x
   start_color();
   init_pair(0, COLOR_WHITE, COLOR_BLACK);//pair, foreground color, background color
   init_pair(1, COLOR_BLACK, COLOR_WHITE);//pair, foreground color, background color
-  wbkgd(win, COLOR_PAIR(0));
+  wbkgd(proc->win, COLOR_PAIR(0));
   manager(*proc); 
   getch();//used to pause the screen until user presses enter
   endwin();
