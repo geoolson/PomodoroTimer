@@ -1,6 +1,6 @@
 /* Program name : Pomodoro Timer 
  * Author       : Geoffrey Olson Jr.
- * Date         : July 3, 2018
+ * Date         : July 4, 2018
  * Purpose      : A time management tool/timer. Based off of the pomodoro technique. Set 
  * the length of your breaks you would like to take and how long you want to work 
  * conitnously between breaks. This program uses a state machine to manage whether 
@@ -56,10 +56,24 @@ void countdown(int len, int start){
   }
 }
 
+//executes aplay with a wav file generating a beep
+void beepWav(){
+  char * args[4];
+  args[0] = "aplay";
+  args[1] = "-q";
+  args[2] = "beep.wav";
+  args[3] = NULL;
+  pid_t pid = fork();
+  if(pid == 0){
+    execvp(args[0], args);
+  }
+}
+
 //flashes the screen for the alarm to alert user a state change occurred
 void flasher(struct settings * proc, pid_t pid){
   int pair = 0;
   if(pid == 0){
+    beepWav();
     while(1){
       if(pair == 0)
         pair = 1; 
@@ -85,6 +99,7 @@ void alarmTrans(struct settings * proc){
   proc->state = (proc->state == ALARMW)? BREAK : WORK; 
   wbkgd(win, COLOR_PAIR(0));
 }
+
 
 //state machine for managing work, breaks, alarms and halt
 void manager( struct settings proc){
