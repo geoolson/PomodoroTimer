@@ -38,8 +38,8 @@ struct settings{
 //return an initialized settings struct
 struct settings * initProc(char * argv[]){
   struct settings * proc = malloc(sizeof(struct settings));
-  proc->worklen = atoi(argv[1]);
-  proc->breaklen = atoi(argv[2]);
+  proc->worklen = atoi(argv[1])*60;
+  proc->breaklen = atoi(argv[2])*60;
   proc->start = time(NULL);
   proc->elapsed = 0;
   proc->state = WORK;
@@ -131,7 +131,7 @@ void manager( struct settings proc){
 // to ctrl-c
 int main(int argc, char * argv[]){
   if(argc < 3){
-    printf("Usage: %s [work length in seconds] [break length in seconds]\n", argv[0]);
+    printf("Usage: %s [work length in minutes] [break length in minutes]\n", argv[0]);
     return -1;
   }
   struct settings * proc = initProc(argv);
