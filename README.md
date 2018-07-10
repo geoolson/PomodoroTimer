@@ -12,12 +12,12 @@ This is a simple time management tool based off of the [Pomodoro Technique](http
 
 #### Running
   - To run, the executable is tomato and takes in two arguments:
-    1.  The length of time you want to work for in seconds
-    2.   The length of time for your breaks in seconds
+    1.  The length of time you want to work for in minutes
+    2.   The length of time for your breaks in minutes
 
   **Example:**
 
-  `./tomato 1500 300`  
+  `./tomato 25 5`  
   The following arguments will give you a 25 minute timer for working then alternate to a 5 minute timer for breaks
 
 ### Author
